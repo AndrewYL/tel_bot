@@ -1,12 +1,9 @@
 import telebot
 import sqlite3
-from random import randint
 from telebot import types
-con1 = sqlite3.connect('db/oge.db')
-cur1 = con1.cursor()
 token = 'token'
 bot = telebot.TeleBot(token)
-num = randint(1,5)
+
 
 @bot.message_handler(commands=['start'])
 def start_message(message):
@@ -29,10 +26,13 @@ def message_reply(message):
         markup.add(item2)
         bot.send_message(message.chat.id, 'Выберите предмет:', reply_markup=markup)
         if message.text.lower() == "Русский язык":
-            result = cur1.execute(f"SELECT task, answer FROM rus_yaz WHERE id = {num}").fetchall()
+            con = sqlite3.connect('db/oge.db')
+            cur = con.cursor()
+            result = cur.execute("""SELECT task, answer FROM rus_yaz
+             WHERE id IN (SELECT id FROM rus_yaz ORDER BY RANDOM() LIMIT 1)""").fetchall()
             for elem in result:
-                bot.send_message(message.chat.id, elem[0])
-            con1.close()
+                bot.send_message(message.chat.id, f'{elem[1]}')
+            con.close()
 
     elif message.text.lower() == "егэ":
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
