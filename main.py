@@ -4,7 +4,7 @@ from random import randint
 from telebot import types
 con1 = sqlite3.connect('db/oge.db')
 cur1 = con1.cursor()
-token = '5282834057:AAGKZQR5A4HWvcE-oRr15Ucv_OPo2KCVdRA'
+token = 'token'
 bot = telebot.TeleBot(token)
 num = randint(1,5)
 
