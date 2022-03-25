@@ -1,6 +1,11 @@
 import sqlite3
 import telebot
 from telebot import types
+<<<<<<< HEAD
+=======
+con1 = sqlite3.connect('db/oge.db')
+cur1 = con1.cursor()
+>>>>>>> origin/master
 token = 'token'
 bot = telebot.TeleBot(token)
 
