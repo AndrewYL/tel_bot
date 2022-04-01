@@ -54,15 +54,5 @@ def message_reply(message):
 
         con.close()
 
-    elif message.text.lower() == "егэ":
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        item1 = types.KeyboardButton("Профильная математика")
-        item2 = types.KeyboardButton("Базовая математика")
-        item3 = types.KeyboardButton("Русский язык")
-        markup.add(item1)
-        markup.add(item2)
-        markup.add(item3)
-        bot.send_message(message.chat.id, 'Выберите предмет:', reply_markup=markup)
-
 
 bot.infinity_polling()
