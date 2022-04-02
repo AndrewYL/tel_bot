@@ -7,24 +7,22 @@ bot = telebot.TeleBot(token)
 
 @bot.message_handler(commands=['start'])
 def start_message(message):
-    bot.send_message(message.chat.id, 'Привет')
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     item1 = types.KeyboardButton("/oge")
     item2 = types.KeyboardButton("/ege")
     markup.add(item1)
     markup.add(item2)
-    bot.send_message(message.chat.id, 'Выберите, к чему вы хотите готовиться:', reply_markup=markup)
+    bot.send_message(message.chat.id, 'Выберите предмет:', reply_markup=markup)
 
 
 @bot.message_handler(commands=['oge'])
 def start_message(message):
-    bot.send_message(message.chat.id, 'Выберите предмет:')
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     item1 = types.KeyboardButton("Математика")
     item2 = types.KeyboardButton("Русский язык(ОГЭ)")
     markup.add(item1)
     markup.add(item2)
-    bot.send_message(message.chat.id, 'тест1', reply_markup=markup)
+    bot.send_message(message.chat.id, 'Выберите предмет:', reply_markup=markup)
 
 
 @bot.message_handler(commands=['ege'])
@@ -37,7 +35,7 @@ def start_message(message):
     markup.add(item1)
     markup.add(item2)
     markup.add(item3)
-    bot.send_message(message.chat.id, 'тест2', reply_markup=markup)
+    bot.send_message(message.chat.id, 'Приступим к подготовке?', reply_markup=markup)
 
 
 @bot.message_handler(content_types='text')
