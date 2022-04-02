@@ -60,8 +60,27 @@ def get_answer(message):
     answer = message.text
     if ''.join(answer.lower().split()) == correct:
         bot.send_message(message.chat.id, 'Правильный ответ!')
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        item1 = types.KeyboardButton("Попробовать еще")
+        item2 = types.KeyboardButton("Отказаться")
+        markup.add(item1)
+        markup.add(item2)
+        bot.send_message(message.chat.id, 'Хотите попробовать еще?', reply_markup=markup)
+        bot.register_next_step_handler(message, return0)
     else:
-        bot.send_message(message.chat.id, 'Ошибка!')
+        bot.send_message(message.chat.id, 'К сожалению, это неправильный ответ. Однако у Вас есть возможность '
+                                          'попробовать свои силы еще раз')
+        bot.register_next_step_handler(message, last_answer)
+
+
+def last_answer(message):
+    global answer
+    answer = message.text
+    if ''.join(answer.lower().split()) == correct:
+        bot.send_message(message.chat.id, 'Правильный ответ!')
+    else:
+        bot.send_message(message.chat.id, 'К сожалению, это неправильный ответ')
+        bot.send_message(message.chat.id, f'Правильный ответ: {correct}')
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     item1 = types.KeyboardButton("Попробовать еще")
     item2 = types.KeyboardButton("Отказаться")
