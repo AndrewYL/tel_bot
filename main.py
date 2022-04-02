@@ -12,7 +12,7 @@ def start_message(message):
     item2 = types.KeyboardButton("/ege")
     markup.add(item1)
     markup.add(item2)
-    bot.send_message(message.chat.id, 'Выберите предмет:', reply_markup=markup)
+    bot.send_message(message.chat.id, 'Выберите экзамен:', reply_markup=markup)
 
 
 @bot.message_handler(commands=['oge'])
@@ -27,7 +27,6 @@ def start_message(message):
 
 @bot.message_handler(commands=['ege'])
 def start_message(message):
-    bot.send_message(message.chat.id, 'Выберите предмет:')
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     item1 = types.KeyboardButton("Профильная математика")
     item2 = types.KeyboardButton("Базовая математика")
@@ -35,7 +34,7 @@ def start_message(message):
     markup.add(item1)
     markup.add(item2)
     markup.add(item3)
-    bot.send_message(message.chat.id, 'Приступим к подготовке?', reply_markup=markup)
+    bot.send_message(message.chat.id, 'Выберите предмет:', reply_markup=markup)
 
 
 @bot.message_handler(content_types='text')
@@ -68,6 +67,21 @@ def get_answer(message):
         markup.add(item2)
         bot.send_message(message.chat.id, 'Хотите попробовать еще?', reply_markup=markup)
         bot.register_next_step_handler(message, return0)
+    elif ''.join(answer.lower().split()) == '/start':
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        item = types.KeyboardButton("/start")
+        markup.add(item)
+        bot.send_message(message.chat.id, 'Начнем с начала!', reply_markup=markup)
+    elif ''.join(answer.lower().split()) == '/oge':
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        item = types.KeyboardButton("/oge")
+        markup.add(item)
+        bot.send_message(message.chat.id, 'Выберем другой предмет!', reply_markup=markup)
+    elif ''.join(answer.lower().split()) == '/ege':
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        item = types.KeyboardButton("/ege")
+        markup.add(item)
+        bot.send_message(message.chat.id, 'Выберем другой предмет!', reply_markup=markup)
     else:
         bot.send_message(message.chat.id, 'К сожалению, это неправильный ответ. Однако у Вас есть возможность '
                                           'попробовать свои силы еще раз')
@@ -79,16 +93,38 @@ def last_answer(message):
     answer = message.text
     if ''.join(answer.lower().split()) == correct:
         bot.send_message(message.chat.id, 'Правильный ответ!')
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        item1 = types.KeyboardButton("Попробовать еще")
+        item2 = types.KeyboardButton("Отказаться")
+        markup.add(item1)
+        markup.add(item2)
+        bot.send_message(message.chat.id, 'Хотите попробовать еще?', reply_markup=markup)
+        bot.register_next_step_handler(message, return0)
+    elif ''.join(answer.lower().split()) == '/start':
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        item = types.KeyboardButton("/start")
+        markup.add(item)
+        bot.send_message(message.chat.id, 'Начнем с начала!', reply_markup=markup)
+    elif ''.join(answer.lower().split()) == '/oge':
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        item = types.KeyboardButton("/oge")
+        markup.add(item)
+        bot.send_message(message.chat.id, 'Выберем другой предмет!', reply_markup=markup)
+    elif ''.join(answer.lower().split()) == '/ege':
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        item = types.KeyboardButton("/ege")
+        markup.add(item)
+        bot.send_message(message.chat.id, 'Выберем другой предмет!', reply_markup=markup)
     else:
         bot.send_message(message.chat.id, 'К сожалению, это неправильный ответ')
         bot.send_message(message.chat.id, f'Правильный ответ: {correct}')
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    item1 = types.KeyboardButton("Попробовать еще")
-    item2 = types.KeyboardButton("Отказаться")
-    markup.add(item1)
-    markup.add(item2)
-    bot.send_message(message.chat.id, 'Хотите попробовать еще?', reply_markup=markup)
-    bot.register_next_step_handler(message, return0)
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        item1 = types.KeyboardButton("Попробовать еще")
+        item2 = types.KeyboardButton("Отказаться")
+        markup.add(item1)
+        markup.add(item2)
+        bot.send_message(message.chat.id, 'Хотите попробовать еще?', reply_markup=markup)
+        bot.register_next_step_handler(message, return0)
 
 
 def return0(message):
