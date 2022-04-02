@@ -49,7 +49,7 @@ def message_reply(message):
             WHERE id IN (SELECT id FROM rus_yaz ORDER BY RANDOM() LIMIT 1)""").fetchall()
         for elem in result:
             print(elem[1])
-            bot.send_message(message.chat.id, f'{elem[1]}')
+            bot.send_photo(message.chat.id, photo=elem[0])
 
         con.close()
 
