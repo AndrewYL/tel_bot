@@ -45,6 +45,8 @@ def message_reply(message):
     if message.text.lower() == "русский язык(огэ)":
         con = sqlite3.connect('db/oge.db')
         cur = con.cursor()
+        global name
+        name = "Русский язык(ОГЭ)"
         result = cur.execute("""SELECT task, answer FROM rus_yaz
             WHERE id IN (SELECT id FROM rus_yaz ORDER BY RANDOM() LIMIT 1)""").fetchall()
         for elem in result:
@@ -94,9 +96,9 @@ def return0(message):
     com = message.text
     if com.lower() == 'попробовать еще':
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        item = types.KeyboardButton("/oge")
+        item = types.KeyboardButton(f"{name}")
         markup.add(item)
-        bot.send_message(message.chat.id, 'Начать с начала', reply_markup=markup)
+        bot.send_message(message.chat.id, 'Начнем с начала', reply_markup=markup)
     else:
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         item = types.KeyboardButton("/start")
