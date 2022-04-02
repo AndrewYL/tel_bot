@@ -53,6 +53,7 @@ def message_reply(message):
             global correct
             correct = elem[1]
             bot.send_photo(message.chat.id, photo=elem[0])
+            bot.send_message(message.from_user.id, 'Ваш ответ:', reply_markup=telebot.types.ReplyKeyboardRemove())
             bot.register_next_step_handler(message, get_answer)
         con.close()
 
