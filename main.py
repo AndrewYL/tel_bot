@@ -54,16 +54,14 @@ def message_reply(message):
             bot.send_message(message.from_user.id, 'Ваш ответ:', reply_markup=telebot.types.ReplyKeyboardRemove())
             bot.register_next_step_handler(message, get_answer)
         con.close()
-    elif message.text.lower() == "математика":
+    if message.text.lower() == "математика":
         con = sqlite3.connect('db/oge.db')
         cur = con.cursor()
-        global name
         name = "Математика"
         result = cur.execute("""SELECT task, answer FROM matem
              WHERE id IN (SELECT id FROM rus_yaz ORDER BY RANDOM() LIMIT 1)""").fetchall()
         for elem in result:
             print(elem[1])
-            global correct
             correct = elem[1]
             bot.send_photo(message.chat.id, photo=elem[0])
             bot.send_message(message.from_user.id, 'Ваш ответ:', reply_markup=telebot.types.ReplyKeyboardRemove())
