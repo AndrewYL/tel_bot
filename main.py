@@ -59,7 +59,7 @@ def message_reply(message):
         cur = con.cursor()
         name = "Математика"
         result = cur.execute("""SELECT task, answer FROM matem
-             WHERE id IN (SELECT id FROM rus_yaz ORDER BY RANDOM() LIMIT 1)""").fetchall()
+             WHERE id IN (SELECT id FROM matem ORDER BY RANDOM() LIMIT 1)""").fetchall()
         for elem in result:
             print(elem[1])
             correct = elem[1]
