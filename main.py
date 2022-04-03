@@ -39,16 +39,55 @@ def start_message(message):
 
 @bot.message_handler(content_types='text')
 def message_reply(message):
+    global name
+    global correct
     if message.text.lower() == "русский язык(огэ)":
         con = sqlite3.connect('db/oge.db')
         cur = con.cursor()
-        global name
         name = "Русский язык(ОГЭ)"
         result = cur.execute("""SELECT task, answer FROM rus_yaz
             WHERE id IN (SELECT id FROM rus_yaz ORDER BY RANDOM() LIMIT 1)""").fetchall()
         for elem in result:
             print(elem[1])
-            global correct
+            correct = elem[1]
+            bot.send_photo(message.chat.id, photo=elem[0])
+            bot.send_message(message.from_user.id, 'Ваш ответ:', reply_markup=telebot.types.ReplyKeyboardRemove())
+            bot.register_next_step_handler(message, get_answer)
+        con.close()
+    if message.text.lower() == "русский язык(егэ)":
+        con = sqlite3.connect('db/ege.db')
+        cur = con.cursor()
+        name = "Русский язык(ЕГЭ)"
+        result = cur.execute("""SELECT task, answer FROM rus_yaz
+            WHERE id IN (SELECT id FROM rus_yaz ORDER BY RANDOM() LIMIT 1)""").fetchall()
+        for elem in result:
+            print(elem[1])
+            correct = elem[1]
+            bot.send_photo(message.chat.id, photo=elem[0])
+            bot.send_message(message.from_user.id, 'Ваш ответ:', reply_markup=telebot.types.ReplyKeyboardRemove())
+            bot.register_next_step_handler(message, get_answer)
+        con.close()
+    if message.text.lower() == "профильная математика":
+        con = sqlite3.connect('db/ege.db')
+        cur = con.cursor()
+        name = "Профильная математика"
+        result = cur.execute("""SELECT task, answer FROM mat_prof
+            WHERE id IN (SELECT id FROM mat_prof ORDER BY RANDOM() LIMIT 1)""").fetchall()
+        for elem in result:
+            print(elem[1])
+            correct = elem[1]
+            bot.send_photo(message.chat.id, photo=elem[0])
+            bot.send_message(message.from_user.id, 'Ваш ответ:', reply_markup=telebot.types.ReplyKeyboardRemove())
+            bot.register_next_step_handler(message, get_answer)
+        con.close()
+    if message.text.lower() == "базовая математика":
+        con = sqlite3.connect('db/ege.db')
+        cur = con.cursor()
+        name = "Базовая математика"
+        result = cur.execute("""SELECT task, answer FROM mat_baz
+            WHERE id IN (SELECT id FROM mat_baz ORDER BY RANDOM() LIMIT 1)""").fetchall()
+        for elem in result:
+            print(elem[1])
             correct = elem[1]
             bot.send_photo(message.chat.id, photo=elem[0])
             bot.send_message(message.from_user.id, 'Ваш ответ:', reply_markup=telebot.types.ReplyKeyboardRemove())
