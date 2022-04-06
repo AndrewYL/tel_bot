@@ -45,12 +45,14 @@ def start_message(message):
     item4 = types.KeyboardButton("Информатика(ОГЭ)")
     item5 = types.KeyboardButton("Химия(ОГЭ)")
     item6 = types.KeyboardButton("Биология(ОГЭ)")
+    item7 = types.KeyboardButton("География(ОГЭ)")
     markup.add(item1)
     markup.add(item2)
     markup.add(item3)
     markup.add(item4)
     markup.add(item5)
     markup.add(item6)
+    markup.add(item7)
     bot.send_message(message.chat.id, 'Выберите предмет:', reply_markup=markup)
 
 
@@ -188,6 +190,20 @@ def message_reply(message):
         name = "Биология(ОГЭ)"
         result = cur.execute("""SELECT task, answer FROM biol
              WHERE id IN (SELECT id FROM biol ORDER BY RANDOM() LIMIT 1)""").fetchall()
+        for elem in result:
+            print(elem[1])
+            correct = elem[1]
+            bot.send_photo(message.chat.id, photo=elem[0])
+            bot.send_message(message.from_user.id, 'Ваш ответ:', reply_markup=telebot.types.ReplyKeyboardRemove())
+            bot.register_next_step_handler(message, get_answer)
+        con.close()
+
+    if message.text.lower() == "география(огэ)":
+        con = sqlite3.connect('db/oge.db')
+        cur = con.cursor()
+        name = "География(ОГЭ)"
+        result = cur.execute("""SELECT task, answer FROM geog
+             WHERE id IN (SELECT id FROM geog ORDER BY RANDOM() LIMIT 1)""").fetchall()
         for elem in result:
             print(elem[1])
             correct = elem[1]
