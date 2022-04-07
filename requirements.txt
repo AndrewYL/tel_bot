@@ -1,7 +1,1 @@
-pyTelegramBotAPI	4.4.0
-requests	2.27.1
-six	1.16.0
-tornado	6.1
-tzdata	2021.5
-tzlocal	4.1
-urllib3	1.26.9
+pyTelegramBotAPI
