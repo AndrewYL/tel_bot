@@ -47,6 +47,7 @@ def start_message(message):
     item6 = types.KeyboardButton("Биология(ОГЭ)")
     item7 = types.KeyboardButton("География(ОГЭ)")
     item8 = types.KeyboardButton("Обществознание(ОГЭ)")
+    item9 = types.KeyboardButton("История(ОГЭ)")
     markup.add(item1)
     markup.add(item2)
     markup.add(item3)
@@ -55,6 +56,7 @@ def start_message(message):
     markup.add(item6)
     markup.add(item7)
     markup.add(item8)
+    markup.add(item9)
     bot.send_message(message.chat.id, 'Выберите предмет:', reply_markup=markup)
 
 
@@ -220,6 +222,20 @@ def message_reply(message):
         name = "Обществознание(ОГЭ)"
         result = cur.execute("""SELECT task, answer FROM obshes
              WHERE id IN (SELECT id FROM obshes ORDER BY RANDOM() LIMIT 1)""").fetchall()
+        for elem in result:
+            print(elem[1])
+            correct = elem[1]
+            bot.send_photo(message.chat.id, photo=elem[0])
+            bot.send_message(message.from_user.id, 'Ваш ответ:', reply_markup=telebot.types.ReplyKeyboardRemove())
+            bot.register_next_step_handler(message, get_answer)
+        con.close()
+
+    if message.text.lower() == "история(огэ)":
+        con = sqlite3.connect('db/oge.db')
+        cur = con.cursor()
+        name = "История(ОГЭ)"
+        result = cur.execute("""SELECT task, answer FROM hist
+             WHERE id IN (SELECT id FROM hist ORDER BY RANDOM() LIMIT 1)""").fetchall()
         for elem in result:
             print(elem[1])
             correct = elem[1]
