@@ -1,30 +1,32 @@
+import os
 import sqlite3
-import telebot
-from telebot import types
+from telebot.async_telebot import AsyncTeleBot
+import asyncio
+from telebot.async_telebot import types
 users = {}
 token = '5282834057:AAGKZQR5A4HWvcE-oRr15Ucv_OPo2KCVdRA'
-bot = telebot.TeleBot(token)
+bot = AsyncTeleBot(token)
 conn1 = sqlite3.connect('db/datab.db', check_same_thread=False)
 cursor1 = conn1.cursor()
 
 
-def db_table_val(user_id: int, ranswer: str):
+async def db_table_val(user_id: int, ranswer: str):
     cursor1.execute('INSERT INTO users (user_id, ranswer) VALUES (?, ?)', (user_id, ranswer))
     conn1.commit()
 
 
 @bot.message_handler(commands=['start'])
-def start_message(message):
+async def start_message(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     item1 = types.KeyboardButton("/oge")
     item2 = types.KeyboardButton("/ege")
     markup.add(item1)
     markup.add(item2)
-    bot.send_message(message.from_user.id, 'Выберите экзамен:', reply_markup=markup)
+    await bot.send_message(message.from_user.id, 'Выберите экзамен:', reply_markup=markup)
 
 
 @bot.message_handler(commands=['oge'])
-def start_message(message):
+async def start_message(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     item1 = types.KeyboardButton("Математика")
     item2 = types.KeyboardButton("Русский язык(ОГЭ)")
@@ -44,11 +46,11 @@ def start_message(message):
     markup.add(item7)
     markup.add(item8)
     markup.add(item9)
-    bot.send_message(message.from_user.id, 'Выберите предмет:', reply_markup=markup)
+    await bot.send_message(message.from_user.id, 'Выберите предмет:', reply_markup=markup)
 
 
 @bot.message_handler(commands=['ege'])
-def start_message(message):
+async def start_message(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     item1 = types.KeyboardButton("Профильная математика")
     item2 = types.KeyboardButton("Базовая математика")
@@ -56,13 +58,16 @@ def start_message(message):
     markup.add(item1)
     markup.add(item2)
     markup.add(item3)
-    bot.send_message(message.from_user.id, 'Выберите предмет:', reply_markup=markup)
+    await bot.send_message(message.from_user.id, 'Выберите предмет:', reply_markup=markup)
 
 
 @bot.message_handler(content_types='text')
-def message_reply(message):
+async def message_reply(message):
+    global id
     global name
     global correct
+    message = await message
+    idd = message.from_user.id
     if message.text.lower() == "русский язык(огэ)":
         con = sqlite3.connect('db/oge.db')
         cur = con.cursor()
@@ -70,11 +75,11 @@ def message_reply(message):
         result = cur.execute("""SELECT task, answer FROM rus_yaz
             WHERE id IN (SELECT id FROM rus_yaz ORDER BY RANDOM() LIMIT 1)""").fetchall()
         for elem in result:
-            print(elem[1])
             correct = elem[1]
             users[message.from_user.id] = correct
-            bot.send_photo(message.from_user.id, photo=elem[0])
-            bot.send_message(message.from_user.id, 'Ваш ответ:', reply_markup=telebot.types.ReplyKeyboardRemove())
+            await bot.send_photo(message.from_user.id, photo=elem[0])
+            print(users)
+            await bot.send_message(message.from_user.id, 'Ваш ответ:', reply_markup=types.ReplyKeyboardRemove())
             bot.register_next_step_handler(message, get_answer)
         con.close()
 
@@ -87,8 +92,8 @@ def message_reply(message):
         for elem in result:
             print(elem[1])
             correct = elem[1]
-            bot.send_photo(message.from_user.id, photo=elem[0])
-            bot.send_message(message.from_user.id, 'Ваш ответ:', reply_markup=telebot.types.ReplyKeyboardRemove())
+            await bot.send_photo(idd, photo=elem[0])
+            await bot.send_message(idd, 'Ваш ответ:', reply_markup=types.ReplyKeyboardRemove())
             bot.register_next_step_handler(message, get_answer)
         con.close()
 
@@ -101,8 +106,8 @@ def message_reply(message):
         for elem in result:
             print(elem[1])
             correct = elem[1]
-            bot.send_photo(message.from_user.id, photo=elem[0])
-            bot.send_message(message.from_user.id, 'Ваш ответ:', reply_markup=telebot.types.ReplyKeyboardRemove())
+            await bot.send_photo(message.from_user.id, photo=elem[0])
+            await bot.send_message(message.from_user.id, 'Ваш ответ:', reply_markup=types.ReplyKeyboardRemove())
             bot.register_next_step_handler(message, get_answer)
         con.close()
 
@@ -115,8 +120,8 @@ def message_reply(message):
         for elem in result:
             print(elem[1])
             correct = elem[1]
-            bot.send_photo(message.from_user.id, photo=elem[0])
-            bot.send_message(message.from_user.id, 'Ваш ответ:', reply_markup=telebot.types.ReplyKeyboardRemove())
+            await bot.send_photo(message.from_user.id, photo=elem[0])
+            await bot.send_message(message.from_user.id, 'Ваш ответ:', reply_markup=types.ReplyKeyboardRemove())
             bot.register_next_step_handler(message, get_answer)
         con.close()
 
@@ -129,8 +134,8 @@ def message_reply(message):
         for elem in result:
             print(elem[1])
             correct = elem[1]
-            bot.send_photo(message.from_user.id, photo=elem[0])
-            bot.send_message(message.from_user.id, 'Ваш ответ:', reply_markup=telebot.types.ReplyKeyboardRemove())
+            await bot.send_photo(message.from_user.id, photo=elem[0])
+            await bot.send_message(message.from_user.id, 'Ваш ответ:', reply_markup=types.ReplyKeyboardRemove())
             bot.register_next_step_handler(message, get_answer)
         con.close()
 
@@ -143,8 +148,8 @@ def message_reply(message):
         for elem in result:
             print(elem[1])
             correct = elem[1]
-            bot.send_photo(message.from_user.id, photo=elem[0])
-            bot.send_message(message.from_user.id, 'Ваш ответ:', reply_markup=telebot.types.ReplyKeyboardRemove())
+            await bot.send_photo(message.from_user.id, photo=elem[0])
+            await bot.send_message(message.from_user.id, 'Ваш ответ:', reply_markup=types.ReplyKeyboardRemove())
             bot.register_next_step_handler(message, get_answer)
         con.close()
 
@@ -157,8 +162,8 @@ def message_reply(message):
         for elem in result:
             print(elem[1])
             correct = elem[1]
-            bot.send_photo(message.from_user.id, photo=elem[0])
-            bot.send_message(message.from_user.id, 'Ваш ответ:', reply_markup=telebot.types.ReplyKeyboardRemove())
+            await bot.send_photo(message.from_user.id, photo=elem[0])
+            await bot.send_message(message.from_user.id, 'Ваш ответ:', reply_markup=types.ReplyKeyboardRemove())
             bot.register_next_step_handler(message, get_answer)
         con.close()
 
@@ -171,8 +176,8 @@ def message_reply(message):
         for elem in result:
             print(elem[1])
             correct = elem[1]
-            bot.send_photo(message.from_user.id, photo=elem[0])
-            bot.send_message(message.from_user.id, 'Ваш ответ:', reply_markup=telebot.types.ReplyKeyboardRemove())
+            await bot.send_photo(message.from_user.id, photo=elem[0])
+            await bot.send_message(message.from_user.id, 'Ваш ответ:', reply_markup=types.ReplyKeyboardRemove())
             bot.register_next_step_handler(message, get_answer)
         con.close()
 
@@ -185,8 +190,8 @@ def message_reply(message):
         for elem in result:
             print(elem[1])
             correct = elem[1]
-            bot.send_photo(message.from_user.id, photo=elem[0])
-            bot.send_message(message.from_user.id, 'Ваш ответ:', reply_markup=telebot.types.ReplyKeyboardRemove())
+            await bot.send_photo(message.from_user.id, photo=elem[0])
+            await bot.send_message(message.from_user.id, 'Ваш ответ:', reply_markup=types.ReplyKeyboardRemove())
             bot.register_next_step_handler(message, get_answer)
         con.close()
 
@@ -199,8 +204,8 @@ def message_reply(message):
         for elem in result:
             print(elem[1])
             correct = elem[1]
-            bot.send_photo(message.from_user.id, photo=elem[0])
-            bot.send_message(message.from_user.id, 'Ваш ответ:', reply_markup=telebot.types.ReplyKeyboardRemove())
+            await bot.send_photo(message.from_user.id, photo=elem[0])
+            await bot.send_message(message.from_user.id, 'Ваш ответ:', reply_markup=types.ReplyKeyboardRemove())
             bot.register_next_step_handler(message, get_answer)
         con.close()
 
@@ -213,8 +218,8 @@ def message_reply(message):
         for elem in result:
             print(elem[1])
             correct = elem[1]
-            bot.send_photo(message.from_user.id, photo=elem[0])
-            bot.send_message(message.from_user.id, 'Ваш ответ:', reply_markup=telebot.types.ReplyKeyboardRemove())
+            await bot.send_photo(message.from_user.id, photo=elem[0])
+            await bot.send_message(message.from_user.id, 'Ваш ответ:', reply_markup=types.ReplyKeyboardRemove())
             bot.register_next_step_handler(message, get_answer)
         con.close()
 
@@ -227,13 +232,13 @@ def message_reply(message):
         for elem in result:
             print(elem[1])
             correct = elem[1]
-            bot.send_photo(message.from_user.id, photo=elem[0])
-            bot.send_message(message.from_user.id, 'Ваш ответ:', reply_markup=telebot.types.ReplyKeyboardRemove())
+            await bot.send_photo(message.from_user.id, photo=elem[0])
+            await bot.send_message(message.from_user.id, 'Ваш ответ:', reply_markup=types.ReplyKeyboardRemove())
             bot.register_next_step_handler(message, get_answer)
         con.close()
 
 
-def get_answer(message):
+async def get_answer(message):
     global answer
     #global r
     answer = message.text
@@ -245,86 +250,86 @@ def get_answer(message):
         #WHERE user_id = {message.from_user.id}""").fetchall()
         #con.commit()
         #con.close()
-        bot.send_message(message.from_user.id, 'Правильный ответ!')
+        await bot.send_message(message.from_user.id, 'Правильный ответ!')
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         item1 = types.KeyboardButton("Попробовать еще")
         item2 = types.KeyboardButton("Отказаться")
         markup.add(item1)
         markup.add(item2)
-        bot.send_message(message.from_user.id, 'Хотите попробовать еще?', reply_markup=markup)
+        await bot.send_message(message.from_user.id, 'Хотите попробовать еще?', reply_markup=markup)
         bot.register_next_step_handler(message, return0)
     elif ''.join(answer.lower().split()) == '/start':
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         item = types.KeyboardButton("/start")
         markup.add(item)
-        bot.send_message(message.from_user.id, 'Начнем с начала!', reply_markup=markup)
+        await bot.send_message(message.from_user.id, 'Начнем с начала!', reply_markup=markup)
     elif ''.join(answer.lower().split()) == '/oge':
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         item = types.KeyboardButton("/oge")
         markup.add(item)
-        bot.send_message(message.from_user.id, 'Выберем другой предмет!', reply_markup=markup)
+        await bot.send_message(message.from_user.id, 'Выберем другой предмет!', reply_markup=markup)
     elif ''.join(answer.lower().split()) == '/ege':
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         item = types.KeyboardButton("/ege")
         markup.add(item)
-        bot.send_message(message.from_user.id, 'Выберем другой предмет!', reply_markup=markup)
+        await bot.send_message(message.from_user.id, 'Выберем другой предмет!', reply_markup=markup)
     else:
-        bot.send_message(message.from_user.id, 'К сожалению, это неправильный ответ. Однако у Вас есть возможность '
+        await bot.send_message(message.from_user.id, 'К сожалению, это неправильный ответ. Однако у Вас есть возможность '
                                           'попробовать свои силы еще раз')
         bot.register_next_step_handler(message, last_answer)
 
 
-def last_answer(message):
+async def last_answer(message):
     global answer
     answer = message.text
     if ''.join(answer.lower().split()) == correct:
-        bot.send_message(message.from_user.id, 'Правильный ответ!')
+        await bot.send_message(message.from_user.id, 'Правильный ответ!')
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         item1 = types.KeyboardButton("Попробовать еще")
         item2 = types.KeyboardButton("Отказаться")
         markup.add(item1)
         markup.add(item2)
-        bot.send_message(message.from_user.id, 'Хотите попробовать еще?', reply_markup=markup)
+        await bot.send_message(message.from_user.id, 'Хотите попробовать еще?', reply_markup=markup)
         bot.register_next_step_handler(message, return0)
     elif ''.join(answer.lower().split()) == '/start':
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         item = types.KeyboardButton("/start")
         markup.add(item)
-        bot.send_message(message.from_user.id, 'Начнем с начала!', reply_markup=markup)
+        await bot.send_message(message.from_user.id, 'Начнем с начала!', reply_markup=markup)
     elif ''.join(answer.lower().split()) == '/oge':
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         item = types.KeyboardButton("/oge")
         markup.add(item)
-        bot.send_message(message.from_user.id, 'Выберем другой предмет!', reply_markup=markup)
+        await bot.send_message(message.from_user.id, 'Выберем другой предмет!', reply_markup=markup)
     elif ''.join(answer.lower().split()) == '/ege':
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         item = types.KeyboardButton("/ege")
         markup.add(item)
-        bot.send_message(message.from_user.id, 'Выберем другой предмет!', reply_markup=markup)
+        await bot.send_message(message.from_user.id, 'Выберем другой предмет!', reply_markup=markup)
     else:
-        bot.send_message(message.from_user.id, 'К сожалению, это неправильный ответ')
-        bot.send_message(message.from_user.id, f'Правильный ответ: {correct}')
+        await bot.send_message(message.from_user.id, 'К сожалению, это неправильный ответ')
+        await bot.send_message(message.from_user.id, f'Правильный ответ: {correct}')
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         item1 = types.KeyboardButton("Попробовать еще")
         item2 = types.KeyboardButton("Отказаться")
         markup.add(item1)
         markup.add(item2)
-        bot.send_message(message.from_user.id, 'Хотите попробовать еще?', reply_markup=markup)
+        await bot.send_message(message.from_user.id, 'Хотите попробовать еще?', reply_markup=markup)
         bot.register_next_step_handler(message, return0)
 
 
-def return0(message):
+async def return0(message):
     com = message.text
     if com.lower() == 'попробовать еще':
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         item = types.KeyboardButton(f"{name}")
         markup.add(item)
-        bot.send_message(message.from_user.id, 'Начнем с начала', reply_markup=markup)
+        await bot.send_message(message.from_user.id, 'Начнем с начала', reply_markup=markup)
     else:
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         item = types.KeyboardButton("/start")
         markup.add(item)
-        bot.send_message(message.from_user.id, 'До скорых встреч!', reply_markup=markup)
+        await bot.send_message(message.from_user.id, 'До скорых встреч!', reply_markup=markup)
 
 
-bot.infinity_polling()
+asyncio.run(bot.polling())
