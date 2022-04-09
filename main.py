@@ -1,38 +1,26 @@
 import sqlite3
 import telebot
 from telebot import types
+users = {}
 token = '5282834057:AAGKZQR5A4HWvcE-oRr15Ucv_OPo2KCVdRA'
 bot = telebot.TeleBot(token)
-#conn1 = sqlite3.connect('db/datab.db', check_same_thread=False)
-#cursor1 = conn1.cursor()
+conn1 = sqlite3.connect('db/datab.db', check_same_thread=False)
+cursor1 = conn1.cursor()
 
 
-#def db_table_val(user_id: int, user_name: str, user_surname: str, username: str, ranswer: int):
-    #cursor1.execute('INSERT INTO users (user_id, user_name, user_surname, username, ranswer) VALUES (?, ?, ?, ?, ?)', (user_id, user_name, user_surname, username, ranswer))
-    #conn1.commit()
+def db_table_val(user_id: int, ranswer: str):
+    cursor1.execute('INSERT INTO users (user_id, ranswer) VALUES (?, ?)', (user_id, ranswer))
+    conn1.commit()
 
 
 @bot.message_handler(commands=['start'])
 def start_message(message):
-    #global r
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     item1 = types.KeyboardButton("/oge")
     item2 = types.KeyboardButton("/ege")
     markup.add(item1)
     markup.add(item2)
     bot.send_message(message.from_user.id, 'Выберите экзамен:', reply_markup=markup)
-    #us_id = message.from_user.id
-    #us_name = message.from_user.first_name
-    #us_sname = message.from_user.last_name
-    #username = message.from_user.username
-    #db_table_val(user_id=us_id, user_name=us_name, user_surname=us_sname, username=username, ranswer=0)
-    #con = sqlite3.connect('db/datab.db')
-    #cur = con.cursor()
-    #result = cur.execute(f"""SELECT ranswer FROM users
-            #WHERE user_id = {message.from_user.id}""").fetchall()
-    #for elem in result:
-        #r = elem[0]
-    #con.close()
 
 
 @bot.message_handler(commands=['oge'])
@@ -84,6 +72,7 @@ def message_reply(message):
         for elem in result:
             print(elem[1])
             correct = elem[1]
+            users[message.from_user.id] = correct
             bot.send_photo(message.from_user.id, photo=elem[0])
             bot.send_message(message.from_user.id, 'Ваш ответ:', reply_markup=telebot.types.ReplyKeyboardRemove())
             bot.register_next_step_handler(message, get_answer)
