@@ -3,7 +3,6 @@ import telebot
 from telebot import types
 token = '5282834057:AAGKZQR5A4HWvcE-oRr15Ucv_OPo2KCVdRA'
 bot = telebot.TeleBot(token)
-users = {}
 #conn1 = sqlite3.connect('db/datab.db', check_same_thread=False)
 #cursor1 = conn1.cursor()
 
