@@ -66,10 +66,14 @@ def start_message(message):
     item2 = types.KeyboardButton("Базовая математика")
     item3 = types.KeyboardButton("Русский язык(ЕГЭ)")
     item4 = types.KeyboardButton("Физика(ЕГЭ)")
+    item5 = types.KeyboardButton("Информатика(ЕГЭ)")
+    item6 = types.KeyboardButton("Химия(ЕГЭ)")
     markup.add(item1)
     markup.add(item2)
     markup.add(item3)
     markup.add(item4)
+    markup.add(item5)
+    markup.add(item6)
     bot.send_message(message.chat.id, 'Выберите предмет:', reply_markup=markup)
 
 
@@ -109,6 +113,32 @@ def message_reply(message):
         name = "Физика(ЕГЭ)"
         result = cur.execute("""SELECT task, answer FROM fizika
             WHERE id IN (SELECT id FROM fizika ORDER BY RANDOM() LIMIT 1)""").fetchall()
+        for elem in result:
+            print(elem[1])
+            correct = elem[1]
+            bot.send_photo(message.chat.id, photo=elem[0])
+            bot.send_message(message.from_user.id, 'Ваш ответ:', reply_markup=telebot.types.ReplyKeyboardRemove())
+            bot.register_next_step_handler(message, get_answer)
+        con.close()
+    if message.text.lower() == 'информатика(егэ)':
+        con = sqlite3.connect('db/ege.db')
+        cur = con.cursor()
+        name = "Информатика(ЕГЭ)"
+        result = cur.execute("""SELECT task, answer FROM infor
+            WHERE id IN (SELECT id FROM infor ORDER BY RANDOM() LIMIT 1)""").fetchall()
+        for elem in result:
+            print(elem[1])
+            correct = elem[1]
+            bot.send_photo(message.chat.id, photo=elem[0])
+            bot.send_message(message.from_user.id, 'Ваш ответ:', reply_markup=telebot.types.ReplyKeyboardRemove())
+            bot.register_next_step_handler(message, get_answer)
+        con.close()
+    if message.text.lower() == 'химия(егэ)':
+        con = sqlite3.connect('db/ege.db')
+        cur = con.cursor()
+        name = "Химия(ЕГЭ)"
+        result = cur.execute("""SELECT task, answer FROM him
+            WHERE id IN (SELECT id FROM him ORDER BY RANDOM() LIMIT 1)""").fetchall()
         for elem in result:
             print(elem[1])
             correct = elem[1]
