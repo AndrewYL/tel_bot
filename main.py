@@ -70,11 +70,13 @@ def start_message(message):
     item6 = types.KeyboardButton("Химия(ЕГЭ)")
     item7 = types.KeyboardButton("Биология(ЕГЭ)")
     item8 = types.KeyboardButton("География(ЕГЭ)")
+    item9 = types.KeyboardButton("Обществознание(ЕГЭ)")
+    item10 = types.KeyboardButton("История(ЕГЭ)")
     markup.add(item1, item2)
     markup.add(item3, item4)
     markup.add(item5, item6)
     markup.add(item7, item8)
-    #markup.add(item5)
+    markup.add(item9, item10)
     #markup.add(item6)
     #markup.add(item7)
     #markup.add(item8)
@@ -169,6 +171,32 @@ def message_reply(message):
         name = "География(ЕГЭ)"
         result = cur.execute("""SELECT task, answer FROM geog
             WHERE id IN (SELECT id FROM geog ORDER BY RANDOM() LIMIT 1)""").fetchall()
+        for elem in result:
+            print(elem[1])
+            correct = elem[1]
+            bot.send_photo(message.chat.id, photo=elem[0])
+            bot.send_message(message.from_user.id, 'Ваш ответ:', reply_markup=telebot.types.ReplyKeyboardRemove())
+            bot.register_next_step_handler(message, get_answer)
+        con.close()
+    if message.text.lower() == 'обществознание(егэ)':
+        con = sqlite3.connect('db/ege.db')
+        cur = con.cursor()
+        name = "Обществознание(ЕГЭ)"
+        result = cur.execute("""SELECT task, answer FROM obshes
+            WHERE id IN (SELECT id FROM obshes ORDER BY RANDOM() LIMIT 1)""").fetchall()
+        for elem in result:
+            print(elem[1])
+            correct = elem[1]
+            bot.send_photo(message.chat.id, photo=elem[0])
+            bot.send_message(message.from_user.id, 'Ваш ответ:', reply_markup=telebot.types.ReplyKeyboardRemove())
+            bot.register_next_step_handler(message, get_answer)
+        con.close()
+    if message.text.lower() == 'история(егэ)':
+        con = sqlite3.connect('db/ege.db')
+        cur = con.cursor()
+        name = "История(ЕГЭ)"
+        result = cur.execute("""SELECT task, answer FROM hist
+            WHERE id IN (SELECT id FROM hist ORDER BY RANDOM() LIMIT 1)""").fetchall()
         for elem in result:
             print(elem[1])
             correct = elem[1]
